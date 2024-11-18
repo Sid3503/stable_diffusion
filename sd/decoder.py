@@ -4,9 +4,36 @@ from torch.nn import functional as F
 from attention import SelfAttention
 
 class VAE_AttentionBlock(nn.Module):
-    pass
+    def __init__(self, channels: int):
+        super().__init__()
+        self.groupnorm = nn.GroupNorm(32, channels)
+        self.attention = SelfAttention
 
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        # x: (Batch, Channels, H, W)
+        residue = x
 
+        n, c, h, w = x.shape
+
+        # (Batch, Features, H, W) -> (Batch, Features, H*W)
+        x = x.view(n, c, h*w)
+
+        # (Batch, Features, H*W) -> (Batch, H*W, Features)
+        x = x.transpose(-1, -2)
+
+        # (Batch, H*W, Features)
+        x = self.attention(x)
+
+        # (Batch, H*W, Features) -> (Batch, Features, H*W)
+        x = x.transpose(-1, -2)
+
+        # (Batch, Features, H*W) -> (Batch, Features, H, W)
+        x.view((n, c, h, w))
+
+        x += residue
+
+        return x
+        
 class VAE_ResidualBlock(nn.Module):
     def __init__(self, in_channels, out_channels):
         super().__init__()
