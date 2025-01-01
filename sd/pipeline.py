@@ -67,12 +67,12 @@ def generate(prompt: str, uncond_prompt: str, input_image=None, strength=0.8, do
             # (1, 77, 768)
             context = clip(tokens)
 
-        to_idle(device)
+        to_idle(clip)
 
 
         if sampler_name == "ddpm":
             sampler = DDPMSampler(generator)
-            sampler.set_inference_steps(n_inference_steps)
+            sampler.set_inference_timesteps(n_inference_steps)
 
         else:
             raise ValueError(f"Unknown sampler {sampler_name}")
