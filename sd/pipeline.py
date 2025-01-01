@@ -18,10 +18,10 @@ def generate(prompt: str, uncond_prompt: str, input_image=None, strength=0.8, do
             raise ValueError("strength must be between 0 - 1")
         
         if idle_device:
-            to_idle: lambda x: x.to(idle_device)
+            to_idle = lambda x: x.to(idle_device)
 
         else:
-            to_idle: lambda x: x
+            to_idle = lambda x: x
 
         generator = torch.Generator(device=device)
 
