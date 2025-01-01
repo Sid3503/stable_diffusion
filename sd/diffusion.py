@@ -343,6 +343,7 @@ class UNET(nn.Module):
 
 class Diffusion(nn.Module):
     def __init__(self):
+        super().__init__()
         self.time_embedding = TimeEmbedding(320)
         self.unet = UNET()
         self.final = UNET_OutputLayer(320, 4)
