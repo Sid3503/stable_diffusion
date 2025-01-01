@@ -82,6 +82,10 @@ class VAE_Decoder(nn.Sequential):
 
             VAE_ResidualBlock(512, 512),
 
+            VAE_ResidualBlock(512, 512),
+
+            VAE_ResidualBlock(512, 512),
+
             # (Batch, 512, H/8, W/8) -> (Batch, 512, H/8, W/8)
             VAE_ResidualBlock(512, 512),
 
