@@ -35,7 +35,7 @@ class SwitchSequential(nn.Sequential):
         return x
 
 
-class UpSample(nn.Module):
+class Upsample(nn.Module):
     def __init__(self, channels: int):
         super().__init__()
         self.conv = nn.Conv2d(channels, channels, kernel_size=3, padding=1)
