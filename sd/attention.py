@@ -4,7 +4,7 @@ from torch.nn import functional as F
 import math
 
 class SelfAttention(nn.Module):
-    def __init__(self, n_heads: int, d_embed: int, in_proj_bias, out_proj_bias = True):
+    def __init__(self, n_heads: int, d_embed: int, in_proj_bias=True, out_proj_bias = True):
         super().__init__()
 
         self.in_proj = nn.Linear(d_embed, 3 * d_embed, bias=in_proj_bias)
@@ -34,7 +34,7 @@ class SelfAttention(nn.Module):
 
         if causal_mask:
             mask = torch.ones_like(weight, dtype=torch.bool).triu(1)
-            weight.masked_fill(mask, -torch.inf)
+            weight.masked_fill_(mask, -torch.inf)
 
         weight /= math.sqrt(self.d_head)
 
@@ -46,9 +46,13 @@ class SelfAttention(nn.Module):
         # (Batch, num_heads, Seq_Len, head_dim) -> (Batch, Seq_Len, num_heads, head_dim)
         output = output.transpose(1, 2)
 
-        # (Batch, Seq_Len, Dim)
-        output = output.reshape(input_shape)
+        # (Batch_Size, Seq_Len,  num_heads, head_dim) -> (Batch_Size, Seq_Len, Dim)
+        output = output.reshape(input_shape) 
 
+        # (Batch_Size, Seq_Len, Dim) -> (Batch_Size, Seq_Len, Dim)
+        output = self.out_proj(output)
+        
+        # (Batch_Size, Seq_Len, Dim)
         return output
     
 
